@@ -1,0 +1,21 @@
+# 请不要修改此处版本号
+version: '1.0.0'
+
+# 连接设置
+auto-start: true # 自动启动
+connection-type: "reverse-ws" # 连接类型，ws或者reverse-ws
+
+connections:
+  ws:
+    name: 'ws-1' # 标识符
+    host: '127.0.0.1' # 监听地址，一般为 127.0.0.1 或者 0.0.0.0
+    port: 12345 # 监听端口
+    token: 'tettet' # Nonebot端的token，无token则为空
+    timeout: 10000 # 连接超时时间，单位毫秒
+  reverse-ws:
+    name: 'rws-1' # 标识符
+    server: 'ws://localhost:12345/mc' # Nonebot的地址 + /mc
+    token: '' # Nonebot端的token，无token则为空
+    timeout: 10000 # 连接超时时间，单位毫秒
+    retry-interval: 5000 # 连接失败后，尝试重连的间隔，单位毫秒
+    max-retries: -1 # 连接失败后，尝试重连的次数，设置为-1则无限重试

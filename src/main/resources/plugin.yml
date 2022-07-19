@@ -1,0 +1,17 @@
+name: PluginNonebot
+version: '${version}'
+main: cn.windis.pluginnonebot.PluginNonebot
+api-version: 1.18
+prefix: PluginNonebot
+load: STARTUP
+authors: [ FYWinds ]
+description: A plugin made for nonebot-mc-adapter
+website: windis.cn
+
+commands:
+  pluginnonebot:
+    aliases:
+      - pn
+      - pluginn
+    usage: "/pn help"
+    description: "A plugin made for nonebot-mc-adapter"
