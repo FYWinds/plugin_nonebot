@@ -4,27 +4,32 @@ package cn.windis.pluginnonebot.webSocket.client
 
 import cn.windis.pluginnonebot.PluginNonebot
 import cn.windis.pluginnonebot.utils.Serializer
+import cn.windis.pluginnonebot.webSocket.IWsConnection
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.websocket.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.net.ConnectException
 
 class Client(server: String, retryInterval: Int, maxRetries: Int) {
     private val client = HttpClient(CIO) {
-        install(WebSockets)
+        install(WebSockets) {
+            pingInterval = 1000
+        }
     }
 
     private var sThread: Thread = Thread {}
 
-    private lateinit var socket: DefaultWebSocketSession
-    private var isValid: Boolean = false
 
     init {
         sThread = Thread {
-            runBlocking {
-                try {
+            try {
+                runBlocking {
                     withContext(Dispatchers.IO) {
                         when (maxRetries) {
                             -1 -> {
@@ -77,26 +82,29 @@ class Client(server: String, retryInterval: Int, maxRetries: Int) {
                             }
                         }
                     }
-                } catch (_: InterruptedException) {
                 }
+            } catch (e: InterruptedException) {
+                PluginNonebot.logger.warning("连接线程被中断")
             }
         }
         sThread.start()
     }
 
     fun stop() {
+        runBlocking { session?.close(CloseReason(CloseReason.Codes.NORMAL, "关闭连接")) }
         client.close()
         sThread.interrupt()
     }
 
     private suspend fun connect(server: String) {
-        client.ws(server) {
-            socket = this
+        client.webSocket(server) {
+            session = this
+            send("{\"type\":\"auth\",\"data\":{\"token\":\"${PluginNonebot.getToken()}\"}}")
             val messageOutputRoutine = launch { outputMessages() }
-
-            messageOutputRoutine.cancelAndJoin()
+            val userInputRoutine = launch { inputMessages() }
         }
     }
+
 
     private suspend fun DefaultClientWebSocketSession.outputMessages() {
         try {
@@ -121,13 +129,27 @@ class Client(server: String, retryInterval: Int, maxRetries: Int) {
                 }
             }
         } catch (e: Exception) {
-            println("Error while receiving: " + e.localizedMessage)
+            TODO("not implemented") //处理连接断开的情况
         }
     }
 
-    suspend fun broadcast(message: Map<Any, Any>) {
-        if (isValid) {
-            socket.send(Serializer.serialize(message))
+    private suspend fun DefaultClientWebSocketSession.inputMessages() {
+        while (true) {
+            val message = messageChannel.receive()
+            try {
+                send(message)
+            } catch (e: Exception) {
+                println("Error while sending: " + e.localizedMessage)
+                return
+            }
         }
+    }
+
+    companion object : IWsConnection {
+        override var session: WebSocketSession? = null
+        override var isSessionValid: Boolean = false
+        override var selfId: String = PluginNonebot.pluginConfig.config.rwsConnection!!.name
+        override var messageChannel: Channel<String> = Channel()
+
     }
 }

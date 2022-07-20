@@ -39,7 +39,7 @@ class MainCommand : CommandExecutor {
                     return true
                 }
                 PluginNonebot.instance.disconnect()
-                sender.sendMessage("§a关闭成功")
+                sender.sendMessage("[PluginNonebot] §a关闭成功")
                 return true
             }
             else -> {
@@ -56,5 +56,9 @@ class MainCommand : CommandExecutor {
             §a/pn start  §7开启插件
             §a/pn stop   §7关闭插件
         """.trimIndent()
+    }
+
+    companion object {
+        private val PREFIX_PN = "§f[§aPlugin§cNonebot§f] "
     }
 }

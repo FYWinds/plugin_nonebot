@@ -25,7 +25,7 @@ fun Application.configureRouting() {
                         when (action) {
                             "Authorization" -> {
                                 val token = data["token"] as String
-                                if (token == PluginNonebot.pluginConfig.config.wsConnection!!.token) {
+                                if (token == PluginNonebot.getToken()) {
                                     Socket.setValid()
                                 } else {
                                     PluginNonebot.logger.warning("Authorization failed")

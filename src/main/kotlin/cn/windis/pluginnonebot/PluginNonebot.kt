@@ -2,8 +2,11 @@ package cn.windis.pluginnonebot
 
 import cn.windis.pluginnonebot.commands.MainCommand
 import cn.windis.pluginnonebot.config.PluginConfig
+import cn.windis.pluginnonebot.event.MainEventListener
+import cn.windis.pluginnonebot.webSocket.IWsConnection
 import cn.windis.pluginnonebot.webSocket.client.Client
 import cn.windis.pluginnonebot.webSocket.server.Server
+import cn.windis.pluginnonebot.webSocket.server.Socket
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.logging.Logger
@@ -24,6 +27,7 @@ class PluginNonebot : JavaPlugin() {
             connect()
         }
         Bukkit.getPluginCommand("pluginnonebot")?.setExecutor(MainCommand())
+        Bukkit.getPluginManager().registerEvents(MainEventListener(), this)
         // TODO Support for multiple connections
         // Logger
     }
@@ -74,5 +78,33 @@ class PluginNonebot : JavaPlugin() {
         var started: Boolean = false
         lateinit var server: Server
         lateinit var client: Client
+
+        fun getWsConnection(): IWsConnection {
+            return when (pluginConfig.config.connectionType) {
+                "ws" -> {
+                    Socket.Companion
+                }
+                "reverse-ws" -> {
+                    Client.Companion
+                }
+                else -> {
+                    throw IllegalArgumentException("Unknown connection type")
+                }
+            }
+        }
+
+        fun getToken(): String {
+            return when (pluginConfig.config.connectionType) {
+                "ws" -> {
+                    pluginConfig.config.wsConnection!!.token
+                }
+                "reverse-ws" -> {
+                    pluginConfig.config.rwsConnection!!.token
+                }
+                else -> {
+                    throw IllegalArgumentException("Unknown connection type")
+                }
+            }
+        }
     }
 }

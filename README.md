@@ -13,6 +13,18 @@
 
 - 基于CraftBukkit 兼容java 17 的衍生服务端
 
+## 实现
+
+### API
+
+- Nothing
+
+### 事件
+
+- PlayerJoinEvent 玩家加入事件
+- PlayerQuitEvent 玩家退出事件
+- PlayerDeathEvent 玩家死亡事件
+
 ## 声明
 
 此项目为我（FYWinds）IGN: FYWind 一人在高考完的暑假随手摸的。
