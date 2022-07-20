@@ -17,13 +17,17 @@
 
 ### API
 
-- Nothing
+- send_command 发送指令以控制台身份执行
+- send_message 发送消息广播到公屏
 
 ### 事件
 
 - PlayerJoinEvent 玩家加入事件
 - PlayerQuitEvent 玩家退出事件
 - PlayerDeathEvent 玩家死亡事件
+- PlayerChatEvent 玩家聊天事件
+- PlayerCommandEvent 玩家命令事件
+- ExplosionEvent 爆炸事件
 
 ## 声明
 
@@ -39,6 +43,8 @@
 - [ModNonebotForge]() (还没写出来)
 
 ## 鸣谢
+
+感谢 [@topjohncian](https://github.com/topjohncian) 大佬对我
 
 感谢 Jetbrains 和 Mojang 对开源项目的支持。
 

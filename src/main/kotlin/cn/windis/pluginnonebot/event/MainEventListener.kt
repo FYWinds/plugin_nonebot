@@ -7,7 +7,10 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.ExplosionPrimeEvent
 import org.bukkit.event.entity.PlayerDeathEvent
-import org.bukkit.event.player.*
+import org.bukkit.event.player.AsyncPlayerChatEvent
+import org.bukkit.event.player.PlayerCommandPreprocessEvent
+import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.player.PlayerQuitEvent
 
 
 class MainEventListener : Listener {
@@ -169,39 +172,29 @@ class MainEventListener : Listener {
             .id(event.hashCode().toString()).data(data)
         getWsConnection().broadcast(message)
     }
-
-    @EventHandler
-    fun onPlayerAdvancementDone(event: PlayerAdvancementDoneEvent) {
-        val data = gson.toJson(
-            NPlayerAdvancementDoneEvent(
-                player = NSimplePlayer(
-                    name = event.player.name,
-                    uuid = event.player.uniqueId.toString(),
-                    location = NEntityLocation(
-                        x = event.player.location.x,
-                        y = event.player.location.y,
-                        z = event.player.location.z,
-                        world = event.player.location.world!!.name
-                    ),
-                    online = event.player.isOnline
-                ),
-                advancement = event.advancement.display?.let {
-                    NAdvancement(
-                        title = it.title,
-                        description = it.description,
-                        type = it.type.toString(),
-                    )
-                } ?: NAdvancement(
-                    title = "",
-                    description = "",
-                    type = "",
-                ),
-            )
-        )
-
-        val message = MessageBuilder("notice").detailType("player_event").subType("advancement")
-            .id(event.hashCode().toString()).data(data)
-        getWsConnection().broadcast(message)
-    }
+//
+//    @EventHandler
+//    fun onPlayerAdvancementDone(event: PlayerAdvancementDoneEvent) {
+//        val data = gson.toJson(
+//            NPlayerAdvancementDoneEvent(
+//                player = NSimplePlayer(
+//                    name = event.player.name,
+//                    uuid = event.player.uniqueId.toString(),
+//                    location = NEntityLocation(
+//                        x = event.player.location.x,
+//                        y = event.player.location.y,
+//                        z = event.player.location.z,
+//                        world = event.player.location.world!!.name
+//                    ),
+//                    online = event.player.isOnline
+//                ),
+//                advancement = event.advancement.display
+//            )
+//        )
+//
+//        val message = MessageBuilder("notice").detailType("player_event").subType("advancement")
+//            .id(event.hashCode().toString()).data(data)
+//        getWsConnection().broadcast(message)
+//    }
 }
 

@@ -6,18 +6,17 @@ import cn.windis.pluginnonebot.PluginNonebot
 import cn.windis.pluginnonebot.utils.Serializer
 import cn.windis.pluginnonebot.webSocket.IWsConnection
 import io.ktor.client.*
-import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.websocket.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import java.net.ConnectException
+import java.util.concurrent.CancellationException
 
 class Client(server: String, retryInterval: Int, maxRetries: Int) {
-    private val client = HttpClient(CIO) {
+    private val client = HttpClient() {
         install(WebSockets) {
             pingInterval = 1000
         }
@@ -30,54 +29,52 @@ class Client(server: String, retryInterval: Int, maxRetries: Int) {
         sThread = Thread {
             try {
                 runBlocking {
-                    withContext(Dispatchers.IO) {
-                        when (maxRetries) {
-                            -1 -> {
-                                while (true) {
-                                    try {
-                                        connect(server)
-                                        break
-                                    } catch (e: ConnectException) {
-                                        PluginNonebot.logger.warning("连接失败，正在重试...")
-                                        Thread.sleep(retryInterval.toLong())
-                                    }
-                                }
-                            }
-                            0 -> {
+                    when (maxRetries) {
+                        -1 -> {
+                            while (true) {
                                 try {
                                     connect(server)
+                                    break
                                 } catch (e: ConnectException) {
-                                    PluginNonebot.logger.warning("连接失败，根据设置停止重连")
-                                    PluginNonebot.instance.disconnect()
+                                    PluginNonebot.logger.warning("连接失败，正在重试...")
+                                    delay(retryInterval.toLong())
                                 }
                             }
-                            in 1 until 10 -> {
-                                var retries = 0
-                                while (true) {
-                                    try {
-                                        connect(server)
-                                        break
-                                    } catch (e: ConnectException) {
-                                        PluginNonebot.logger.warning("连接失败，正在重试... ${retries + 1}/$maxRetries")
-                                        Thread.sleep(retryInterval.toLong())
-                                        retries++
-                                        if (retries >= maxRetries) {
-                                            PluginNonebot.logger.warning("连接失败，根据设置停止重连")
-                                            PluginNonebot.instance.disconnect()
-                                        }
+                        }
+                        0 -> {
+                            try {
+                                connect(server)
+                            } catch (e: ConnectException) {
+                                PluginNonebot.logger.warning("连接失败，根据设置停止重连")
+                                PluginNonebot.instance.disconnect()
+                            }
+                        }
+                        in 1 until 10 -> {
+                            var retries = 0
+                            while (true) {
+                                try {
+                                    connect(server)
+                                    break
+                                } catch (e: ConnectException) {
+                                    PluginNonebot.logger.warning("连接失败，正在重试... ${retries + 1}/$maxRetries")
+                                    delay(retryInterval.toLong())
+                                    retries++
+                                    if (retries >= maxRetries) {
+                                        PluginNonebot.logger.warning("连接失败，根据设置停止重连")
+                                        PluginNonebot.instance.disconnect()
                                     }
                                 }
                             }
-                            else -> {
-                                PluginNonebot.logger.warning("重连次数过高或为负数，自动设置为无限重连模式")
-                                while (true) {
-                                    try {
-                                        connect(server)
-                                        break
-                                    } catch (e: ConnectException) {
-                                        PluginNonebot.logger.warning("连接失败，正在重试...")
-                                        Thread.sleep(retryInterval.toLong())
-                                    }
+                        }
+                        else -> {
+                            PluginNonebot.logger.warning("重连次数过高或为负数，自动设置为无限重连模式")
+                            while (true) {
+                                try {
+                                    connect(server)
+                                    break
+                                } catch (e: ConnectException) {
+                                    PluginNonebot.logger.warning("连接失败，正在重试...")
+                                    delay(retryInterval.toLong())
                                 }
                             }
                         }
@@ -91,56 +88,72 @@ class Client(server: String, retryInterval: Int, maxRetries: Int) {
     }
 
     fun stop() {
-        runBlocking { session?.close(CloseReason(CloseReason.Codes.NORMAL, "关闭连接")) }
-        client.close()
-        sThread.interrupt()
+        try {
+            runBlocking { session?.close(CloseReason(CloseReason.Codes.NORMAL, "关闭连接")) }
+            client.close()
+            sThread.interrupt()
+        } catch (_: Exception) {
+        }
     }
 
     private suspend fun connect(server: String) {
         client.webSocket(server) {
             session = this
-            send("{\"type\":\"auth\",\"data\":{\"token\":\"${PluginNonebot.getToken()}\"}}")
-            val messageOutputRoutine = launch { outputMessages() }
-            val userInputRoutine = launch { inputMessages() }
+            launch { incomingMessages() }
+
+            launch { messageChannel.send("{\"action\":\"auth\",\"data\":{\"token\":\"${PluginNonebot.getToken()}\"}}") }
+
+            outgoingMessages()
+
         }
     }
 
 
-    private suspend fun DefaultClientWebSocketSession.outputMessages() {
+    private suspend fun DefaultClientWebSocketSession.incomingMessages() {
         try {
             for (message in incoming) {
                 message as? Frame.Text ?: continue
-                val msg: Map<Any, Any> = Serializer.deserialize(message.readText(), Map::class.java) as Map<Any, Any>
+                val msg: MutableMap<Any, Any> =
+                    Serializer.deserialize(message.readText(), Map::class.java) as MutableMap<Any, Any>
                 val action: String = msg["action"] as String
-                val data: Map<Any, Any> = msg["data"] as Map<Any, Any>
+                val data: MutableMap<Any, Any> = msg["data"] as MutableMap<Any, Any>
 
                 when (action) {
                     "Call_API" -> {
                         val api: String = data["api"] as String
-                        val params: Map<Any, Any> = data["params"] as Map<Any, Any>
+                        val params: MutableMap<String, Any> = data["params"] as MutableMap<String, Any>
+                        val seq: String = data["seq"] as String
+                        call(api, params, seq)
                     }
                     "Disconnect" -> {
                         val errorCode = data["errorCode"] as Int
                         val errorMessage = data["errorMessage"] as String
                     }
                     else -> {
+                        PluginNonebot.logger.warning("未知消息类型: ${Serializer.serialize(msg)}")
                         // TODO 其他操作
                     }
                 }
             }
+        } catch (e: CancellationException) {
+            PluginNonebot.logger.warning("接收消息线程被中断")
+            PluginNonebot.instance.reload()
         } catch (e: Exception) {
-            TODO("not implemented") //处理连接断开的情况
+            e.printStackTrace()
+            PluginNonebot.logger.warning("处理消息失败: ${e.javaClass} ${e.localizedMessage}")
         }
     }
 
-    private suspend fun DefaultClientWebSocketSession.inputMessages() {
+    private suspend fun DefaultClientWebSocketSession.outgoingMessages() {
         while (true) {
-            val message = messageChannel.receive()
             try {
-                send(message)
+                send(messageChannel.receive())
+            } catch (e: CancellationException) {
+                delay(1000)
+                println("消息发送线程被中断: ${e.localizedMessage}")
+                PluginNonebot.instance.reload()
             } catch (e: Exception) {
-                println("Error while sending: " + e.localizedMessage)
-                return
+                println("发送消息失败: ${e.localizedMessage}")
             }
         }
     }

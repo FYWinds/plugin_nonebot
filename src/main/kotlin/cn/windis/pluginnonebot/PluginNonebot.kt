@@ -1,15 +1,17 @@
 package cn.windis.pluginnonebot
 
 import cn.windis.pluginnonebot.commands.MainCommand
+import cn.windis.pluginnonebot.commands.TabHandler
 import cn.windis.pluginnonebot.config.PluginConfig
 import cn.windis.pluginnonebot.event.MainEventListener
+import cn.windis.pluginnonebot.utils.Logger
 import cn.windis.pluginnonebot.webSocket.IWsConnection
 import cn.windis.pluginnonebot.webSocket.client.Client
 import cn.windis.pluginnonebot.webSocket.server.Server
 import cn.windis.pluginnonebot.webSocket.server.Socket
+import io.ktor.websocket.*
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
-import java.util.logging.Logger
 
 /**
  * @author FYWinds
@@ -21,12 +23,13 @@ class PluginNonebot : JavaPlugin() {
         this.saveDefaultConfig()
 
         instance = this
-        Companion.logger = this.logger
+        Companion.logger = Logger(this.logger)
         pluginConfig = PluginConfig(this.config)
         if (pluginConfig.config.isAutoStart) {
             connect()
         }
         Bukkit.getPluginCommand("pluginnonebot")?.setExecutor(MainCommand())
+        Bukkit.getPluginCommand("pluginnonebot")?.tabCompleter = TabHandler()
         Bukkit.getPluginManager().registerEvents(MainEventListener(), this)
         // TODO Support for multiple connections
         // Logger
@@ -57,10 +60,10 @@ class PluginNonebot : JavaPlugin() {
     fun disconnect() {
         when (pluginConfig.config.connectionType) {
             "ws" -> {
-                Companion.server.stop()
+                Socket.disconnect(CloseReason(CloseReason.Codes.NORMAL, "Plugin stopped"))
             }
             "reverse-ws" -> {
-                client.stop()
+                Client.disconnect(CloseReason(CloseReason.Codes.NORMAL, "Plugin stopped"))
             }
         }
         started = false
@@ -78,6 +81,7 @@ class PluginNonebot : JavaPlugin() {
         var started: Boolean = false
         lateinit var server: Server
         lateinit var client: Client
+        const val PREFIX_PN = "§f[§aPlugin§cNonebot§f] "
 
         fun getWsConnection(): IWsConnection {
             return when (pluginConfig.config.connectionType) {

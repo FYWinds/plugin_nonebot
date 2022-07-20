@@ -7,9 +7,7 @@ import java.time.Duration
 
 fun Application.configureSockets() {
     install(WebSockets) {
-        pingPeriod = Duration.ofSeconds(15)
+        pingPeriod = Duration.ofSeconds(1)
         timeout = Duration.ofMillis(PluginNonebot.pluginConfig.config.wsConnection!!.timeout.toLong())
-        maxFrameSize = Long.MAX_VALUE
-        masking = false
     }
 }
