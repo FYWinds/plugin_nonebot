@@ -19,6 +19,8 @@
 
 - send_command 发送指令以控制台身份执行
 - send_message 发送消息广播到公屏
+- get_player_info 获取玩家信息
+- get_player_list 获取玩家列表
 
 ### 事件
 
@@ -41,6 +43,7 @@
 - [nonebot-adapter-mc]() (还没写出来)
 - [ModNonebotFabric]() (还没写出来)
 - [ModNonebotForge]() (还没写出来)
+- [MinecraftWrapperNonebot]() (不一定会写，考虑mcdr插件)
 
 ## 鸣谢
 
@@ -48,10 +51,12 @@
 
 感谢 Jetbrains 和 Mojang 对开源项目的支持。
 
-[<img alt="JetBrains logo." height="300" src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" width="300" align="center"/>](https://www.jetbrains.com/)
-[<img alt="IntelliJ IDEA logo." height="200" src="https://resources.jetbrains.com/storage/products/company/brand/logos/IntelliJ_IDEA_icon.png" width="200" align="center"/>](https://www.jetbrains.com/zh-cn/idea/)
+<p align="center">
+<a href="https://www.jetbrains.com/"><img alt="JetBrains logo." height="300" src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" width="300" align="center"/></a>
+<a href="https://www.jetbrains.com/zh-cn/idea/"><img alt="IntelliJ IDEA logo." height="200" src="https://resources.jetbrains.com/storage/products/company/brand/logos/IntelliJ_IDEA_icon.png" width="200" align="center"/></a>
+</p>
 
 感谢 Nonebot 项目组的开发者们提供了一个如此棒的框架。
 <p align="center">
-  <a href="https://v2.nonebot.dev/"><img src="https://v2.nonebot.dev/logo.png" width="200" height="200" alt="nonebot"></a>
+<a href="https://v2.nonebot.dev/"><img src="https://v2.nonebot.dev/logo.png" width="200" height="200" alt="nonebot"></a>
 </p>

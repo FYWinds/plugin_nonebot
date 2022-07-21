@@ -1,6 +1,7 @@
 package cn.windis.pluginnonebot.event
 
 import cn.windis.pluginnonebot.PluginNonebot.Companion.getWsConnection
+import cn.windis.pluginnonebot.model.*
 import cn.windis.pluginnonebot.utils.MessageBuilder
 import com.google.gson.Gson
 import org.bukkit.event.EventHandler

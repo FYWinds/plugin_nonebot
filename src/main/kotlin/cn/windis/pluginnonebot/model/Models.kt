@@ -1,4 +1,4 @@
-package cn.windis.pluginnonebot.event
+package cn.windis.pluginnonebot.model
 
 import com.google.gson.annotations.SerializedName
 
@@ -66,4 +66,44 @@ data class NPlayerCommandSendEvent(
 data class NPlayerAdvancementDoneEvent(
     @SerializedName("player") val player: NSimplePlayer,
     @SerializedName("advancement") val advancement: NAdvancement,
+)
+
+data class NPlayer(
+    @SerializedName("name") val name: String,
+    @SerializedName("uuid") val uuid: String,
+    @SerializedName("location") val location: NEntityLocation?,
+    @SerializedName("online") val online: Boolean,
+    @SerializedName("last_played") val lastPlayed: Long,
+    @SerializedName("first_played") val firstPlayed: Long,
+    @SerializedName("address") val address: String?,
+)
+
+data class NPlayerInventory(
+    @SerializedName("items") val items: List<Map<String, Any>>,
+    @SerializedName("armor") val armor: List<Map<String, Any>>,
+    @SerializedName("extra") val extra: List<Map<String, Any>>,
+    @SerializedName("main_hand") val mainHand: Map<String, Any>,
+    @SerializedName("off_hand") val offHand: Map<String, Any>,
+    @SerializedName("held_itemslot") val heldItemSlot: Int,
+)
+
+
+data class NPlayerInfo(
+    @SerializedName("name") val name: String,
+    @SerializedName("uuid") val uuid: String,
+    @SerializedName("display_name") val displayName: String,
+    @SerializedName("location") val location: NEntityLocation?,
+    @SerializedName("spawn_location") val spawnLocation: NEntityLocation?,
+    @SerializedName("online") val online: Boolean,
+    @SerializedName("last_played") val lastPlayed: Long,
+    @SerializedName("first_played") val firstPlayed: Long,
+    @SerializedName("address") val address: String?,
+    @SerializedName("inventory") val inventory: NPlayerInventory,
+    @SerializedName("walk_speed") val walkSpeed: Float,
+    @SerializedName("can_fly") val canFly: Boolean,
+    @SerializedName("fly_speed") val flySpeed: Float,
+    @SerializedName("exp") val exp: Int,
+    @SerializedName("locale") val locale: String,
+    @SerializedName("ping") val ping: Int,
+    @SerializedName("gamemode") val gamemode: String,
 )

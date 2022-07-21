@@ -1,6 +1,5 @@
 package cn.windis.pluginnonebot.webSocket
 
-import cn.windis.pluginnonebot.PluginNonebot
 import cn.windis.pluginnonebot.api.CallApi.Companion.callAPI
 import cn.windis.pluginnonebot.utils.MessageBuilder
 import cn.windis.pluginnonebot.utils.Serializer
@@ -11,7 +10,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import org.bukkit.Bukkit
 
 interface IWsConnection {
     var session: WebSocketSession?
@@ -38,7 +36,7 @@ interface IWsConnection {
     fun call(api: String, params: MutableMap<String, Any>, seq: String) {
         val result: MutableMap<String, Any> = mutableMapOf()
         try {
-            Bukkit.getScheduler().runTask(PluginNonebot.instance, Runnable { result["data"] = callAPI(api, params) })
+            result["data"] = callAPI(api, params)
         } catch (e: Exception) {
             result["code"] = -1
             result["message"] = "[Internal Error] ${e.message ?: "unknown error"}"
