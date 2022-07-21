@@ -3,10 +3,11 @@ package cn.windis.pluginnonebot.api
 import cn.windis.pluginnonebot.PluginNonebot
 import org.bukkit.Bukkit
 
-fun sendCommand(command: String): List<String> {
+fun sendCommand(command: String): Boolean {
     val sender = ConsoleSender()
-    Bukkit.getScheduler().runTask(PluginNonebot.instance, Runnable {
-        Bukkit.getServer().dispatchCommand(sender, command)
-    })
-    return sender.getMessages() // 实际测试发现毫无用处
+    val task = Bukkit.getScheduler()
+        .callSyncMethod(
+            PluginNonebot.instance
+        ) { Bukkit.getServer().dispatchCommand(sender, command) }
+    return task.get()
 }

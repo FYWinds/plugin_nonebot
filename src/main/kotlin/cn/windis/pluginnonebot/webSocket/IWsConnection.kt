@@ -34,9 +34,9 @@ interface IWsConnection {
     }
 
     fun call(api: String, params: MutableMap<String, Any>, seq: String) {
-        val result: MutableMap<String, Any> = mutableMapOf()
+        var result: MutableMap<String, Any> = mutableMapOf()
         try {
-            result["data"] = callAPI(api, params)
+            result = callAPI(api, params)
         } catch (e: Exception) {
             result["code"] = -1
             result["message"] = "[Internal Error] ${e.message ?: "unknown error"}"

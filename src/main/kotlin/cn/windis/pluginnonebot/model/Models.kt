@@ -79,9 +79,9 @@ data class NPlayer(
 )
 
 data class NPlayerInventory(
-    @SerializedName("items") val items: List<Map<String, Any>>,
-    @SerializedName("armor") val armor: List<Map<String, Any>>,
-    @SerializedName("extra") val extra: List<Map<String, Any>>,
+    @SerializedName("items") val items: Map<Int, Map<String, Any>>,
+    @SerializedName("armor") val armor: Map<Int, Map<String, Any>>,
+    @SerializedName("extra") val extra: Map<Int, Map<String, Any>>,
     @SerializedName("main_hand") val mainHand: Map<String, Any>,
     @SerializedName("off_hand") val offHand: Map<String, Any>,
     @SerializedName("held_itemslot") val heldItemSlot: Int,

@@ -17,6 +17,7 @@ fun getPlayerInfo(playerIdentifier: String): NPlayerInfo? {
     if (player == null) {
         return null
     }
+
     return NPlayerInfo(
         name = player.name,
         uuid = player.uniqueId.toString(),
@@ -41,9 +42,12 @@ fun getPlayerInfo(playerIdentifier: String): NPlayerInfo? {
         address = player.address?.address?.hostAddress.toString(),
         inventory = player.inventory.let { inventory ->
             NPlayerInventory(
-                items = inventory.contents.map { it.serialize() },
-                armor = inventory.armorContents.map { it.serialize() },
-                extra = inventory.extraContents.map { it.serialize() },
+                items = inventory.contents.mapIndexed { index, item -> item?.let { index to it.serialize() } }
+                    .filterNotNull().toMap(),
+                armor = inventory.armorContents.mapIndexed { index, item -> item?.let { index to it.serialize() } }
+                    .filterNotNull().toMap(),
+                extra = inventory.extraContents.mapIndexed { index, item -> item?.let { index to it.serialize() } }
+                    .filterNotNull().toMap(),
                 mainHand = inventory.itemInMainHand.serialize(),
                 offHand = inventory.itemInOffHand.serialize(),
                 heldItemSlot = inventory.heldItemSlot,
@@ -59,7 +63,7 @@ fun getPlayerInfo(playerIdentifier: String): NPlayerInfo? {
     )
 }
 
-class TempPlayerInfo() {
+class TempPlayerInfo {
     companion object {
         val uuidPattern = Regex("^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$")
     }

@@ -4,12 +4,12 @@ import cn.windis.pluginnonebot.utils.Serializer
 
 class CallApi {
     companion object {
-        fun callAPI(api: String, params: Map<String, Any>): Map<String, Any> {
+        fun callAPI(api: String, params: Map<String, Any>): MutableMap<String, Any> {
             val result: MutableMap<String, Any> = mutableMapOf()
             result["data"] = mutableMapOf<String, Any>()
             when (api) {
                 "send_command" -> {
-                    result["data"] = mutableMapOf<String, Any>("message" to sendCommand(params["command"] as String))
+                    result["data"] = mutableMapOf("success" to sendCommand(params["command"] as String))
                 }
                 "send_message" -> {
                     sendMessage(params["message"] as String)
@@ -30,8 +30,8 @@ class CallApi {
                     result["message"] = "NoSuchAPI"
                 }
             }
-            result["code"] = 0
-            result["message"] = ""
+            result["code"] = result["code"] ?: 0
+            result["message"] = result["message"] ?: ""
             return result
         }
     }

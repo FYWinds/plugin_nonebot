@@ -17,7 +17,7 @@ class ConsoleSender : ConsoleCommandSender {
 
     private var messages: MutableList<String> = ArrayList()
 
-    fun getMessages(): List<String> {
+    fun getMessages(): MutableList<String> {
         return messages
     }
 
