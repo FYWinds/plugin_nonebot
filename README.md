@@ -1,62 +1,87 @@
 # PluginNonebot
 
-#### 一款为Bukkit服务端开发的 Nonebot-adapter-mc 对接插件
+#### A plugin for bukkit server to connect to [nonebot-adapter-mc]()(WIP)
 
-## 版本支持
+<!-- PROJECT SHIELDS -->
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![License][license-shield]][license-url]
+[![Downloads][downloads-shield]][downloads-url]
 
-以下服务端均为人工测试过的版本
+## Requirements
 
-- Spigot 1.18.2
-- Paper 1.18.2
-
-以下为猜测可能支持版本，不保证可用性
-
-- 基于CraftBukkit 兼容java 17 的衍生服务端
-
-## 实现
+## Implementations
 
 ### API
 
-- send_command 发送指令以控制台身份执行
-- send_message 发送消息广播到公屏
-- get_player_info 获取玩家信息
-- get_player_list 获取玩家列表
+- None
 
-### 事件
+### Events
 
-- PlayerJoinEvent 玩家加入事件
-- PlayerQuitEvent 玩家退出事件
-- PlayerDeathEvent 玩家死亡事件
-- PlayerChatEvent 玩家聊天事件
-- PlayerCommandEvent 玩家命令事件
-- ExplosionEvent 爆炸事件
+- None
 
-## 声明
+## Usage
 
-此项目为我（FYWinds）IGN: FYWind 一人在高考完的暑假随手摸的。
-这是我第一次写Kotlin/Java项目，不能保证代码质量和设计思路，如果想吐槽可以来issue或者pr。
-本人对此项目的支持是不定的，可能会随时弃坑，如果想稳定使用建议fork一份随时准备自己改）
+## Contributing
 
-## 相关项目
+##                               
 
-- [Nonebot2](https://github.com/nonebot/nonebot2)
-- [nonebot-adapter-mc]() (还没写出来)
-- [ModNonebotFabric]() (还没写出来)
-- [ModNonebotForge]() (还没写出来)
-- [MinecraftWrapperNonebot]() (不一定会写，考虑mcdr插件)
+## Related Projects
 
-## 鸣谢
+[![Nonebot2][nonebot2-shield]][nonebot2-url]
 
-感谢 [@topjohncian](https://github.com/topjohncian) 大佬对我
+- [nonebot-adapter-mc]() (WIP)
+- [ModNonebot]() (WIP, probably based on fabric)
+- [MinecraftWrapperNonebot]() (WIP)
 
-感谢 Jetbrains 和 Mojang 对开源项目的支持。
+## Special Thanks
+
+<p align="center">
+Thanks <a href="https://github.com/topjohncian">@topjohncian</a>, who has helped me a lot in ktor.
+</p>
+<p align="center">
+Thanks <a href="https://www.jetbrains.com/">JetBrains</a>, who has provided me a great IDE.
+</p>
 
 <p align="center">
 <a href="https://www.jetbrains.com/"><img alt="JetBrains logo." height="300" src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" width="300" align="center"/></a>
-<a href="https://www.jetbrains.com/zh-cn/idea/"><img alt="IntelliJ IDEA logo." height="200" src="https://resources.jetbrains.com/storage/products/company/brand/logos/IntelliJ_IDEA_icon.png" width="200" align="center"/></a>
+<a href="https://www.jetbrains.com/idea/"><img alt="IntelliJ IDEA logo." height="200" src="https://resources.jetbrains.com/storage/products/company/brand/logos/IntelliJ_IDEA_icon.png" width="200" align="center"/></a>
 </p>
 
-感谢 Nonebot 项目组的开发者们提供了一个如此棒的框架。
+<p align="center">Thanks Nonebot Team, who created a great framework.</p>
 <p align="center">
 <a href="https://v2.nonebot.dev/"><img src="https://v2.nonebot.dev/logo.png" width="200" height="200" alt="nonebot"></a>
 </p>
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+
+[contributors-shield]: https://img.shields.io/github/contributors/McNonebot/PluginNonebot.svg?style=for-the-badge
+
+[contributors-url]: https://github.com/McNonebot/PluginNonebot/graphs/contributors
+
+[forks-shield]: https://img.shields.io/github/forks/McNonebot/PluginNonebot.svg?style=for-the-badge
+
+[forks-url]: https://github.com/McNonebot/PluginNonebot/network/members
+
+[stars-shield]: https://img.shields.io/github/stars/McNonebot/PluginNonebot.svg?style=for-the-badge
+
+[stars-url]: https://github.com/McNonebot/PluginNonebot/graphs/stargazers
+
+[issues-shield]: https://img.shields.io/github/issues/McNonebot/PluginNonebot.svg?style=for-the-badge
+
+[issues-url]: https://github.com/McNonebot/PluginNonebot/issues
+
+[license-shield]: https://img.shields.io/github/license/McNonebot/PluginNonebot.svg?style=for-the-badge
+
+[license-url]: https://github.com/McNonebot/PluginNonebot/blob/master/LICENSE.txt
+
+[downloads-shield]: https://img.shields.io/github/downloads/McNonebot/PluginNonebot/total?style=for-the-badge
+
+[downloads-url]: https://github.com/McNonebot/PluginNonebot/releases
+
+[nonebot2-shield]: https://img.shields.io/badge/Nonebot2-EA5252?style=for-the-badge
+
+[nonebot2-url]: https://v2.nonebot.dev
