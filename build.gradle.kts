@@ -1,10 +1,11 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.Yaml
 import pl.allegro.tech.build.axion.release.domain.hooks.HookContext
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import java.util.jar.JarFile
+
 
 buildscript {
     repositories {
@@ -17,15 +18,15 @@ buildscript {
 
 plugins {
     kotlin("jvm")
-    id("com.github.johnrengelman.shadow") version "8.0.0"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
     id("pl.allegro.tech.build.axion-release") version "1.14.4"
-    id("org.jlleitschuh.gradle.ktlint") version "11.2.0"
+    id("org.jlleitschuh.gradle.ktlint") version "11.3.2"
     id("io.ktor.plugin") version "2.3.0"
 }
 
-group = "fyi.fyw.mc"
 version = scmVersion.version
 
+val group: String by project
 val mcApiVersion: String by project
 val repoRef: String by project
 val ktorVersion: String by project
@@ -50,8 +51,8 @@ scmVersion {
                         \[Unreleased\]: https:\/\/github\.com\/$repoRef\/compare\/v$v...HEAD
                         \[$v\]: https:\/\/github\.com\/$repoRef\/${if (c.previousVersion == v) "releases/tag/v$v" else "compare/v${c.previousVersion}...v$v"}${'$'}2
                     """.trimIndent()
-                })
-            )
+                }),
+            ),
         )
 
         pre("commit")
@@ -86,6 +87,17 @@ dependencies {
     compileOnly(group = "org.spigotmc", name = "spigot-api", version = "$mcApiVersion+")
 }
 
+val relocatingApi: Configuration by configurations.creating
+val relocatingImplementation: Configuration by configurations.creating
+configurations.api { extendsFrom(relocatingApi) }
+configurations.implementation { extendsFrom(relocatingImplementation) }
+
+dependencies {
+    relocatingApi("io.ktor:ktor-server-core:$ktorVersion")
+    relocatingApi("io.ktor:ktor-client-okhttp:$ktorVersion")
+    relocatingApi("com.google.code.gson:gson:2.10.1")
+}
+
 tasks {
     wrapper {
         gradleVersion = "8.1.1"
@@ -96,7 +108,7 @@ tasks {
         val placeholders = mapOf(
             "version" to version,
             "apiVersion" to mcApiVersion,
-            "kotlinVersion" to project.properties["kotlinVersion"]
+            "kotlinVersion" to project.properties["kotlinVersion"],
         )
 
         filesMatching("plugin.yml") {
@@ -122,20 +134,61 @@ tasks {
         exclude("offline-plugin.yml")
     }
 
+    val configureRelocation by creating {
+        val relocatingConfigurations = listOf(relocatingApi, relocatingImplementation)
+
+        val packages = buildSet {
+            relocatingConfigurations.forEach { config ->
+                config.files.forEach { jar ->
+                    JarFile(jar).use { jarFile ->
+                        jarFile.entries().asSequence().forEach { entry ->
+                            if (entry.name.endsWith(".class") && entry.name != "module-info.class") {
+                                val lastSlash = entry.name.lastIndexOf('/')
+                                val pkg = entry.name.substring(0..lastSlash).replace('/', '.')
+                                add(pkg)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        val prefix = "${project.group}.${project.name.lowercase()}.libraries"
+        shadowJar {
+            packages.forEach {
+                relocate(it, "$prefix.$it")
+            }
+        }
+    }
+
+    project.setProperty("mainClassName", "fyi.fyw.mc.pluginnonebot.PluginNonebot")
     // offline jar should be ready to go with all dependencies
     shadowJar {
         minimize()
-        archiveClassifier.set("offline")
         exclude("plugin.yml")
         rename("offline-plugin.yml", "plugin.yml")
     }
 
-    // avoid classpath conflicts/pollution via relocation
-    val configureShadowRelocation by registering(ConfigureShadowRelocation::class) {
-        target = shadowJar.get()
-        prefix = "${project.group}.${project.name.lowercase()}.libraries"
-    }
     build {
-        dependsOn(shadowJar).dependsOn(configureShadowRelocation)
+        dependsOn(shadowJar).dependsOn(configureRelocation)
+
+        doLast {
+            file("build/libs").listFiles()?.forEach {
+                if (it.name.endsWith("-all.jar")) {
+                    it.renameTo(file("build/libs/${project.name}-$version-all.jar"))
+                }
+            }
+        }
     }
+}
+
+configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+    verbose.set(true)
+    outputToConsole.set(true)
+    enableExperimentalRules.set(true)
+    disabledRules.set(
+        setOf(
+            "final-newline",
+            "trailing-comma-on-call-site",
+        ),
+    )
 }

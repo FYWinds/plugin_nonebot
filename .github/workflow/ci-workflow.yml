@@ -1,0 +1,37 @@
+name: PR
+on:
+  push:
+    branchs:
+      - main
+      - feature/*
+      - hotfix/*
+      - test/*
+
+
+jobs:
+  build:
+    name: Gradle Dev Build
+    runs-on: ubuntu-22.04
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: gradle/gradle-build-action@v2
+      - name: Gradle Build
+        run: ./gradlew build
+      - name: Get Version
+        id: version
+        run: echo "VRESION=$(./gradlew --console plain --quiet currentVersion -Prelease.quiet)" >> $GITHUB_ENV
+      - name: Get Short SHA
+        run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
+      - name: Rename Build
+        run: for f in ./build/libs/*.jar; do mv "$f" "$(echo "$f"|sed s/${VERSION}/CI-${SHORT_SHA}/)";done
+      - name: Upload build
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: build/libs/*-all.jar
+          retention-days: 30
+          if-no-files-found: errorl
