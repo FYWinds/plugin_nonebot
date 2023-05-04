@@ -14,26 +14,31 @@
 
 ## Implementations
 
+### Connection
+
+- [x] Work as a websocket server
+- [ ] Work as a websocket client
+- [ ] Http webhook
+- [ ] Http Server
+
 ### API
 
-- None
+- get_available_api
 
 ### Events
 
-- None
+- PlayerLogin
 
 ## Usage
 
 ## Contributing
-
-##                               
 
 ## Related Projects
 
 [![Nonebot2][nonebot2-shield]][nonebot2-url]
 
 - [nonebot-adapter-mc]() (WIP)
-- [ModNonebot]() (WIP, probably based on fabric)
+- [ModNonebot]() (WIP, probably based on architectury)
 - [MinecraftWrapperNonebot]() (WIP)
 
 ## Special Thanks

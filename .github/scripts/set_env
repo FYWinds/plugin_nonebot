@@ -1,4 +1,5 @@
 #!/bin/sh
-echo "VERSION=$(./gradlew --console plain --quiet currentVersion -Prelease.quiet)" >> "$GITHUB_ENV"
+# shellcheck disable=SC2129
+echo "VERSION=$(grep 'version' ./gradle.properties | awk -F '=' '{print $2}')" >> $GITHUB_ENV
 echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_ENV"
 echo "PROJECT_NAME=$(grep 'rootProject.name' ./settings.gradle.kts | awk -F ' = "|"' '{print $2}')" >> "$GITHUB_ENV"

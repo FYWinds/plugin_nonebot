@@ -1,9 +1,5 @@
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.Yaml
-import pl.allegro.tech.build.axion.release.domain.hooks.HookContext
-import java.time.OffsetDateTime
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 import java.util.jar.JarFile
 
 
@@ -19,47 +15,14 @@ buildscript {
 plugins {
     kotlin("jvm")
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("pl.allegro.tech.build.axion-release") version "1.14.4"
     id("org.jlleitschuh.gradle.ktlint") version "11.3.2"
     id("io.ktor.plugin") version "2.3.0"
 }
 
-version = scmVersion.version
-
 val group: String by project
 val mcApiVersion: String by project
-val repoRef: String by project
 val ktorVersion: String by project
-
-scmVersion {
-    versionIncrementer("incrementMinorIfNotOnRelease", mapOf("releaseBranchPattern" to "release/.+"))
-
-    hooks {
-        // FIXME - workaround for Kotlin DSL issue https://github.com/allegro/axion-release-plugin/issues/500
-        pre(
-            "fileUpdate",
-            mapOf(
-                "file" to "CHANGELOG.md",
-                "pattern" to KotlinClosure2<String, HookContext, String>({ v, _ ->
-                    "\\[Unreleased\\]([\\s\\S]+?)\\n(?:^\\[Unreleased\\]: https:\\/\\/github\\.com\\/$repoRef\\/compare\\/[^\\n]*\$([\\s\\S]*))?\\z"
-                }),
-                "replacement" to KotlinClosure2<String, HookContext, String>({ v, c ->
-                    """
-                        \[Unreleased\]
-
-                        ## \[$v\] - ${currentDateString()}$1
-                        \[Unreleased\]: https:\/\/github\.com\/$repoRef\/compare\/v$v...HEAD
-                        \[$v\]: https:\/\/github\.com\/$repoRef\/${if (c.previousVersion == v) "releases/tag/v$v" else "compare/v${c.previousVersion}...v$v"}${'$'}2
-                    """.trimIndent()
-                }),
-            ),
-        )
-
-        pre("commit")
-    }
-}
-
-fun currentDateString() = OffsetDateTime.now(ZoneOffset.UTC).toLocalDate().format(DateTimeFormatter.ISO_DATE)
+val version: String by project
 
 java {
     toolchain {
@@ -74,15 +37,17 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
-    implementation("io.ktor:ktor-server-core:$ktorVersion")
-    implementation("io.ktor:ktor-server-netty:$ktorVersion")
-    implementation("io.ktor:ktor-server-websockets:$ktorVersion")
-    implementation("io.ktor:ktor-client-core:$ktorVersion")
-    implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
-    implementation("io.ktor:ktor-client-websockets:$ktorVersion")
+    implementation(kotlin("stdlib"))
+//    implementation("io.ktor:ktor-server-core:$ktorVersion")
+//    implementation("io.ktor:ktor-server-netty:$ktorVersion")
+//    implementation("io.ktor:ktor-server-websockets:$ktorVersion")
+//    implementation("io.ktor:ktor-client-core:$ktorVersion")
+//    implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
+//    implementation("io.ktor:ktor-client-websockets:$ktorVersion")
+    implementation("org.java-websocket:Java-WebSocket:1.5.3")
 
     implementation("com.google.code.gson:gson:2.10.1")
+//    implementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")
 
     compileOnly(group = "org.spigotmc", name = "spigot-api", version = "$mcApiVersion+")
 }
@@ -93,9 +58,12 @@ configurations.api { extendsFrom(relocatingApi) }
 configurations.implementation { extendsFrom(relocatingImplementation) }
 
 dependencies {
-    relocatingApi("io.ktor:ktor-server-core:$ktorVersion")
-    relocatingApi("io.ktor:ktor-client-okhttp:$ktorVersion")
+//    relocatingApi("io.ktor:ktor-server-core:$ktorVersion")
+//    relocatingApi("io.ktor:ktor-client-okhttp:$ktorVersion")
+//    relocatingApi(kotlin("stdlib"))
+    relocatingApi("org.java-websocket:Java-WebSocket:1.5.3")
     relocatingApi("com.google.code.gson:gson:2.10.1")
+//    relocatingApi("com.fasterxml.jackson.core:jackson-databind:2.14.2")
 }
 
 tasks {
@@ -152,7 +120,7 @@ tasks {
                 }
             }
         }
-        val prefix = "${project.group}.${project.name.lowercase()}.libraries"
+        val prefix = "${project.group}.libraries"
         shadowJar {
             packages.forEach {
                 relocate(it, "$prefix.$it")
@@ -165,6 +133,9 @@ tasks {
     shadowJar {
         minimize()
         exclude("plugin.yml")
+        dependencies {
+            exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
+        }
         rename("offline-plugin.yml", "plugin.yml")
     }
 
@@ -189,6 +160,8 @@ configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
         setOf(
             "final-newline",
             "trailing-comma-on-call-site",
+            "trailing-comma-on-declaration-site",
+            "no-consecutive-blank-lines",
         ),
     )
 }

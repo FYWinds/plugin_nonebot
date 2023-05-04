@@ -4,5 +4,5 @@ version: "${version}"
 api-version: "${apiVersion}"
 website: https://github.com/McNonebot/PluginNonebot
 author: FYWinds
-libraries:
-  - org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}
+depend:
+  - kotlin-stdlib

@@ -18,10 +18,11 @@ jobs:
           fetch-depth: 0
       - uses: gradle/gradle-build-action@v2
       - name: Gradle Build
-        run: ./gradlew build
-      - name: Get Version
-        id: version
-        run: echo "version=$(./gradlew --console plain --quiet currentVersion -Prelease.quiet)" >> $GITHUB_OUTPUT
+        run: chmod +x ./gradlew && ./gradlew build
+      - name: Set env variables
+        run: |
+          chmod +x .github/scripts/set_env
+          .github/scripts/set_env
       - name: Upload build
         uses: actions/upload-artifact@v3
         with:
