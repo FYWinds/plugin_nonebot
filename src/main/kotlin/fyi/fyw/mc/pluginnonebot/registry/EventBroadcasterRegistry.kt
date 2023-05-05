@@ -2,7 +2,7 @@ package fyi.fyw.mc.pluginnonebot.registry
 
 import fyi.fyw.mc.pluginnonebot.PluginNonebot
 import fyi.fyw.mc.pluginnonebot.events.EventBroadcaster
-import fyi.fyw.mc.pluginnonebot.events.broadcasters.BroadcasterPlayerLogin
+import fyi.fyw.mc.pluginnonebot.events.broadcasters.*
 import org.bukkit.Bukkit
 
 object EventBroadcasterRegistry : Registry<EventBroadcaster> {
@@ -24,6 +24,11 @@ object EventBroadcasterRegistry : Registry<EventBroadcaster> {
     }
 
     fun init() {
-        this.register(BroadcasterPlayerLogin())
+        this.register(BroadcasterPlayerJoin())
+        this.register(BroadcasterPlayerQuit())
+        this.register(BroadcasterPlayerChat())
+        this.register(BroadcasterServerChat())
+        this.register(BroadcasterPlayerCommand())
+        this.register(BroadcasterServerCommand())
     }
 }

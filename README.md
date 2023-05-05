@@ -27,7 +27,21 @@
 
 ### Events
 
-- PlayerLogin
+#### Player
+
+- [x] player_join
+- [x] player_quit
+- [ ] player_advancement
+
+#### Message
+
+- [x] player_chat
+- [x] server_broadcast
+
+#### Command
+
+- [x] player_command
+- [x] server_command
 
 ## Usage
 
