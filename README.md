@@ -17,7 +17,7 @@
 ### Connection
 
 - [x] Work as a websocket server
-- [ ] Work as a websocket client
+- [x] Work as a websocket client
 - [ ] Http webhook
 - [ ] Http Server
 
