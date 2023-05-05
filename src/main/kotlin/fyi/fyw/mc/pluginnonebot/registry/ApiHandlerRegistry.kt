@@ -36,6 +36,14 @@ object ApiHandlerRegistry : Registry<ApiHandler> {
                 try {
                     val result = handler.handle(params)
                     BaseApiResultFrame(data = result, echo = echo)
+                } catch (_: TypeCastException) {
+                    BaseApiResultFrame(
+                        "failed",
+                        RetCode.UnsupportedParam.value,
+                        RetCode.UnsupportedParam.message,
+                        null,
+                        echo,
+                    )
                 } catch (e: Exception) {
                     BaseApiResultFrame(
                         "failed",
