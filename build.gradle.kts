@@ -144,7 +144,7 @@ tasks {
 
         doLast {
             file("build/libs").listFiles()?.forEach {
-                if (it.name.endsWith("-all.jar")) {
+                if (it.name.endsWith("all.jar")) {
                     it.renameTo(file("build/libs/${project.name}-$version-all.jar"))
                 }
             }

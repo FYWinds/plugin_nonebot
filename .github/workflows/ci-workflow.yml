@@ -1,11 +1,11 @@
 name: Dev Build
 on:
   push:
-    branchs:
-      - main
-      - feature/*
-      - hotfix/*
-      - test/*
+    branches:
+      - dev
+      - dev/**
+    tags-ignore:
+      - '**'
 
 
 jobs:
