@@ -24,6 +24,7 @@
 ### API
 
 - get_available_api
+- get_player_list
 
 ### Events
 

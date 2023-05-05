@@ -3,6 +3,7 @@ package fyi.fyw.mc.pluginnonebot.registry
 import fyi.fyw.mc.pluginnonebot.PluginNonebot
 import fyi.fyw.mc.pluginnonebot.api.ApiHandler
 import fyi.fyw.mc.pluginnonebot.api.internal.HandlerGetAvailableApi
+import fyi.fyw.mc.pluginnonebot.api.internal.HandlerGetPlayerList
 import fyi.fyw.mc.pluginnonebot.models.api.BaseApiResultFrame
 import org.java_websocket.WebSocket
 
@@ -83,5 +84,6 @@ object ApiHandlerRegistry : Registry<ApiHandler> {
 
     fun init() {
         this.register(HandlerGetAvailableApi())
+        this.register(HandlerGetPlayerList())
     }
 }
