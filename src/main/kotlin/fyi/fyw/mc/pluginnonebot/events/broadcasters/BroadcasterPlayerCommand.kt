@@ -1,7 +1,6 @@
 package fyi.fyw.mc.pluginnonebot.events.broadcasters
 
 import fyi.fyw.mc.pluginnonebot.events.EventBroadcaster
-import fyi.fyw.mc.pluginnonebot.models.NEntityLocation
 import fyi.fyw.mc.pluginnonebot.models.NSimplePlayer
 import fyi.fyw.mc.pluginnonebot.models.event.BaseEventFrame
 import fyi.fyw.mc.pluginnonebot.models.event.EventPlayerCommand
@@ -15,19 +14,7 @@ class BroadcasterPlayerCommand : EventBroadcaster() {
         broadcast(
             BaseEventFrame(
                 data = EventPlayerCommand(
-                    NSimplePlayer(
-                        event.player.displayName,
-                        event.player.uniqueId.toString(),
-                        event.player.isOnline,
-                        NEntityLocation(
-                            event.player.location.world!!.name,
-                            event.player.location.x,
-                            event.player.location.y,
-                            event.player.location.z,
-                            event.player.location.yaw,
-                            event.player.location.pitch,
-                        ),
-                    ),
+                    NSimplePlayer.fromPlayer(event.player),
                     event.message,
                     event.isCancelled,
                 ),

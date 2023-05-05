@@ -1,7 +1,6 @@
 package fyi.fyw.mc.pluginnonebot.events.broadcasters
 
 import fyi.fyw.mc.pluginnonebot.events.EventBroadcaster
-import fyi.fyw.mc.pluginnonebot.models.NEntityLocation
 import fyi.fyw.mc.pluginnonebot.models.NSimplePlayer
 import fyi.fyw.mc.pluginnonebot.models.event.BaseEventFrame
 import fyi.fyw.mc.pluginnonebot.models.event.EventServerChat
@@ -16,21 +15,7 @@ class BroadcasterServerChat : EventBroadcaster() {
         broadcast(
             BaseEventFrame(
                 data = EventServerChat(
-                    event.recipients.filterIsInstance<Player>().map {
-                        NSimplePlayer(
-                            it.displayName,
-                            it.uniqueId.toString(),
-                            it.isOnline,
-                            NEntityLocation(
-                                it.location.world!!.name,
-                                it.location.x,
-                                it.location.y,
-                                it.location.z,
-                                it.location.yaw,
-                                it.location.pitch,
-                            ),
-                        )
-                    }.toSet(),
+                    NSimplePlayer.fromPlayer(event.recipients.filterIsInstance<Player>()),
                     message = event.message,
                     event.isCancelled,
                 ),
