@@ -174,6 +174,7 @@ configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
             "trailing-comma-on-call-site",
             "trailing-comma-on-declaration-site",
             "no-consecutive-blank-lines",
+            "no-wildcard-imports",
         ),
     )
 }
