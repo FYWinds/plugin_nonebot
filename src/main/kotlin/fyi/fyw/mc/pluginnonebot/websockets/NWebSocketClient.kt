@@ -31,6 +31,7 @@ class NWebSocketClient(conn: WsClientConfig) : WebSocketClient(URI(conn.address)
     }
 
     override fun onOpen(handshakedata: ServerHandshake) {
+        logger.info("Connection established with server ${connection.remoteSocketAddress}.")
         WebsocketsRegistry.register(this)
     }
 

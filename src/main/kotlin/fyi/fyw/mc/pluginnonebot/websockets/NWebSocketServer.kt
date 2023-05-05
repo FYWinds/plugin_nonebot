@@ -51,7 +51,7 @@ class NWebSocketServer(conn: WsServerConfig) : Websockets, WsServer(InetSocketAd
                 throw InvalidDataException(401, "Unauthorized") // Reject the connection
             }
         }
-        logger.debug("Acceptted connection from ${conn.remoteSocketAddress.hostString}")
+        logger.debug("Accepted connection from ${conn.remoteSocketAddress.hostString}")
         return super.onWebsocketHandshakeReceivedAsServer(conn, draft, request)
     }
 
