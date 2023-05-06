@@ -7,7 +7,7 @@ open class NSimplePlayer(
     val name: String,
     val uuid: String,
     val isOnline: Boolean,
-    val location: NEntityLocation?,
+    val location: NLocation?,
 ) {
     companion object {
         fun from(player: Player): NSimplePlayer {
@@ -15,7 +15,7 @@ open class NSimplePlayer(
                 player.displayName,
                 player.uniqueId.toString(),
                 player.isOnline,
-                NEntityLocation.from(player.location),
+                NLocation.from(player.location),
             )
         }
 
@@ -26,7 +26,7 @@ open class NSimplePlayer(
                     it.uniqueId.toString(),
                     it.isOnline,
                     if (it is Player && it.isOnline) {
-                        NEntityLocation(
+                        NLocation(
                             it.location.world!!.name,
                             it.location.x,
                             it.location.y,

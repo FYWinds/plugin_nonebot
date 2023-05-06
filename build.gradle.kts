@@ -158,16 +158,17 @@ tasks {
             copy {
                 from("build/libs/${project.name}-$version-all.jar")
                 rename("${project.name}-$version-all.jar", "${project.name}.jar")
-                into("/home/fywinds/projects/Bukkit-plugin/server/plugins/")
+                into("../../Bukkit-plugin/server/plugins/")
             }
         }
     }
 }
 
 configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+    version.set("0.47.1")
     verbose.set(true)
     outputToConsole.set(true)
-    enableExperimentalRules.set(true)
+    enableExperimentalRules.set(false)
     disabledRules.set(
         setOf(
             "final-newline",

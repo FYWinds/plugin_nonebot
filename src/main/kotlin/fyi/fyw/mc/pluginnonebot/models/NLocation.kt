@@ -2,7 +2,7 @@ package fyi.fyw.mc.pluginnonebot.models
 
 import org.bukkit.Location
 
-open class NEntityLocation(
+open class NLocation(
     val world: String,
     val x: Double,
     val y: Double,
@@ -12,9 +12,9 @@ open class NEntityLocation(
 ) {
 
     companion object {
-        fun from(location: Location): NEntityLocation {
-            return NEntityLocation(
-                location.world!!.name,
+        fun from(location: Location): NLocation {
+            return NLocation(
+                location.world?.name ?: "Unknown World",
                 location.x,
                 location.y,
                 location.z,
