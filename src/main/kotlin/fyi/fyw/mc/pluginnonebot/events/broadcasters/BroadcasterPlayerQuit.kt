@@ -1,7 +1,6 @@
 package fyi.fyw.mc.pluginnonebot.events.broadcasters
 
 import fyi.fyw.mc.pluginnonebot.events.EventBroadcaster
-import fyi.fyw.mc.pluginnonebot.models.NSimplePlayer
 import fyi.fyw.mc.pluginnonebot.models.event.BaseEventFrame
 import fyi.fyw.mc.pluginnonebot.models.event.EventPlayerQuit
 import org.bukkit.event.EventHandler
@@ -13,10 +12,7 @@ class BroadcasterPlayerQuit : EventBroadcaster() {
     fun listen(event: PlayerQuitEvent) {
         broadcast(
             BaseEventFrame(
-                data = EventPlayerQuit(
-                    NSimplePlayer.fromPlayer(event.player),
-                    event.quitMessage ?: "",
-                ),
+                data = EventPlayerQuit.from(event),
                 type = "player",
                 detailType = "player_quit",
             ),

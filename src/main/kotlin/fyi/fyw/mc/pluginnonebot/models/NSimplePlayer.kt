@@ -10,16 +10,16 @@ open class NSimplePlayer(
     val location: NEntityLocation?,
 ) {
     companion object {
-        fun fromPlayer(player: Player): NSimplePlayer {
+        fun from(player: Player): NSimplePlayer {
             return NSimplePlayer(
                 player.displayName,
                 player.uniqueId.toString(),
                 player.isOnline,
-                NEntityLocation.fromLocation(player.location),
+                NEntityLocation.from(player.location),
             )
         }
 
-        fun fromPlayer(players: List<OfflinePlayer>): Set<NSimplePlayer> {
+        fun from(players: Iterable<OfflinePlayer>): Set<NSimplePlayer> {
             return players.map {
                 NSimplePlayer(
                     it.name ?: "Unknown Player",

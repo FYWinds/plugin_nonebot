@@ -1,7 +1,6 @@
 package fyi.fyw.mc.pluginnonebot.models.event
 
 import com.google.gson.annotations.SerializedName
-import java.io.Serializable
 import java.util.*
 
 class BaseEventFrame(
@@ -11,4 +10,4 @@ class BaseEventFrame(
     val type: String,
     @SerializedName("detail_type") val detailType: String,
     @SerializedName("sub_type") val subType: String = "",
-) : Serializable
+)

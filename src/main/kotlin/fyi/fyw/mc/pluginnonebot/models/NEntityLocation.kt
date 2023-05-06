@@ -1,7 +1,6 @@
 package fyi.fyw.mc.pluginnonebot.models
 
 import org.bukkit.Location
-import java.io.Serializable
 
 open class NEntityLocation(
     val world: String,
@@ -10,10 +9,10 @@ open class NEntityLocation(
     val z: Double,
     val yaw: Float,
     val pitch: Float,
-) : Serializable {
+) {
 
     companion object {
-        fun fromLocation(location: Location): NEntityLocation {
+        fun from(location: Location): NEntityLocation {
             return NEntityLocation(
                 location.world!!.name,
                 location.x,

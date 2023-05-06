@@ -1,7 +1,6 @@
 package fyi.fyw.mc.pluginnonebot.events.broadcasters
 
 import fyi.fyw.mc.pluginnonebot.events.EventBroadcaster
-import fyi.fyw.mc.pluginnonebot.models.NSimplePlayer
 import fyi.fyw.mc.pluginnonebot.models.event.BaseEventFrame
 import fyi.fyw.mc.pluginnonebot.models.event.EventPlayerCommand
 import org.bukkit.event.EventHandler
@@ -13,11 +12,7 @@ class BroadcasterPlayerCommand : EventBroadcaster() {
     fun listen(event: PlayerCommandPreprocessEvent) {
         broadcast(
             BaseEventFrame(
-                data = EventPlayerCommand(
-                    NSimplePlayer.fromPlayer(event.player),
-                    event.message,
-                    event.isCancelled,
-                ),
+                data = EventPlayerCommand.from(event),
                 type = "command",
                 detailType = "player_command",
             ),

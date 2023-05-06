@@ -12,9 +12,9 @@ class HandlerGetPlayerList : ApiHandler {
         val offline = params.getOrDefault("offline", false) as Boolean
         return ResultGetPlayerList(
             if (offline) {
-                NSimplePlayer.fromPlayer(Bukkit.getOfflinePlayers().toList())
+                NSimplePlayer.from(Bukkit.getOfflinePlayers().toList())
             } else {
-                NSimplePlayer.fromPlayer(Bukkit.getOnlinePlayers().toList())
+                NSimplePlayer.from(Bukkit.getOnlinePlayers().toList())
             },
         )
     }

@@ -16,7 +16,7 @@ class EventPlayerDeath(
     companion object {
         fun from(event: PlayerDeathEvent): EventPlayerDeath {
             return EventPlayerDeath(
-                NSimplePlayer.fromPlayer(event.entity),
+                NSimplePlayer.from(event.entity),
                 event.deathMessage ?: "",
                 event.newExp,
                 event.newLevel,

@@ -1,9 +1,20 @@
 package fyi.fyw.mc.pluginnonebot.models.event
 
 import fyi.fyw.mc.pluginnonebot.models.NSimpleCommandSender
+import org.bukkit.event.server.ServerCommandEvent
 
 class EventServerCommand(
     val sender: NSimpleCommandSender,
     val command: String,
     val cancelled: Boolean,
-) : BaseEvent
+) : BaseEvent {
+    companion object {
+        fun from(event: ServerCommandEvent): EventServerCommand {
+            return EventServerCommand(
+                NSimpleCommandSender.from(event.sender),
+                event.command,
+                event.isCancelled,
+            )
+        }
+    }
+}
