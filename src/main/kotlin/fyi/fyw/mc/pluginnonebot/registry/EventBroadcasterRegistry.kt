@@ -30,5 +30,6 @@ object EventBroadcasterRegistry : Registry<EventBroadcaster> {
         this.register(BroadcasterServerChat())
         this.register(BroadcasterPlayerCommand())
         this.register(BroadcasterServerCommand())
+        this.register(BroadcasterPlayerDeath())
     }
 }

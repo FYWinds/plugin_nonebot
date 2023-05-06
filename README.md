@@ -32,6 +32,7 @@
 
 - [x] player_join
 - [x] player_quit
+- [x] player_death
 - [ ] player_advancement
 
 #### Message

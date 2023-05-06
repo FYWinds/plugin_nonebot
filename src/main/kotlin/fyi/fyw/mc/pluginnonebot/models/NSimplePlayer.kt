@@ -2,14 +2,13 @@ package fyi.fyw.mc.pluginnonebot.models
 
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
-import java.io.Serializable
 
 open class NSimplePlayer(
     val name: String,
     val uuid: String,
     val isOnline: Boolean,
     val location: NEntityLocation?,
-) : Serializable {
+) {
     companion object {
         fun fromPlayer(player: Player): NSimplePlayer {
             return NSimplePlayer(
