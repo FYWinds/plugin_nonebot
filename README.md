@@ -25,6 +25,7 @@
 
 - get_available_api
 - get_player_list
+- get_player_info
 
 ### Events
 

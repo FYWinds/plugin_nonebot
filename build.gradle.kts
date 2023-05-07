@@ -152,7 +152,7 @@ tasks {
     }
 
     register("devDebug") {
-        dependsOn(build)
+        dependsOn(ktlintFormat).dependsOn(build)
 
         doLast {
             copy {
@@ -165,16 +165,12 @@ tasks {
 }
 
 configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
-    version.set("0.47.1")
+    version.set("0.48.2")
     verbose.set(true)
     outputToConsole.set(true)
-    enableExperimentalRules.set(false)
+    enableExperimentalRules.set(true)
     disabledRules.set(
         setOf(
-            "final-newline",
-            "trailing-comma-on-call-site",
-            "trailing-comma-on-declaration-site",
-            "no-consecutive-blank-lines",
             "no-wildcard-imports",
         ),
     )
