@@ -9,6 +9,10 @@ jobs:
   changelog:
     name: Generate Changelog
     runs-on: ubuntu-22.04
+    outputs:
+      skipped: ${{ steps.changelog.outputs.skipped }}
+      tag: ${{ steps.changelog.outputs.tag }}
+      clean_changelog: ${{ steps.changelog.outputs.clean_changelog }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -27,7 +31,7 @@ jobs:
 
   release:
     name: Create Release
-    needs: build
+    needs: [ build, changelog ]
     runs-on: ubuntu-22.04
     steps:
       - name: Download build
@@ -37,11 +41,11 @@ jobs:
           path: build
       - name: Create Release
         uses: softprops/action-gh-release@v1
-        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        if: ${{ needs.changelog.outputs.skipped == 'false' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.changelog.outputs.tag }}
-          name: ${{ steps.changelog.outputs.tag }}
-          body: ${{ steps.changelog.outputs.clean_changelog }}
+          tag_name: ${{ needs.changelog.outputs.tag }}
+          name: ${{ needs.changelog.outputs.tag }}
+          body: ${{ needs.changelog.outputs.clean_changelog }}
           files: "build/*all.jar"
