@@ -2,44 +2,50 @@ name: Publish
 on:
   push:
     branches:
-      - release
-      - release/**
-  pull_request:
-    branches:
-      - release
-      - release/**
+      - main
+      - master
 
 jobs:
-  build:
-    uses: ./.github/workflows/build-workflow.yml
-  release:
-    needs: build
-    name: Create Release
+  changelog:
+    name: Generate Changelog
     runs-on: ubuntu-22.04
+    outputs:
+      skipped: ${{ steps.changelog.outputs.skipped }}
+      tag: ${{ steps.changelog.outputs.tag }}
+      clean_changelog: ${{ steps.changelog.outputs.clean_changelog }}
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
-      - name: Download build
-        uses: actions/download-artifact@v3
-        with:
-          name: build
-          path: build
 
       - name: Conventional Changelog Action
         id: changelog
         uses: TriPSs/conventional-changelog-action@v3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          create-summary: true
 
+  build:
+    needs: changelog
+    uses: ./.github/workflows/build-workflow.yml
+
+  release:
+    name: Create Release
+    needs: [ build, changelog ]
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Download build
+        uses: actions/download-artifact@v3
+        with:
+          name: build
+          path: build
       - name: Create Release
         uses: softprops/action-gh-release@v1
-        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        if: ${{ needs.changelog.outputs.skipped == 'false' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.changelog.outputs.tag }}
-          name: ${{ steps.changelog.outputs.tag }}
-          body: ${{ steps.changelog.outputs.clean_changelog }}
+          tag_name: ${{ needs.changelog.outputs.tag }}
+          name: ${{ needs.changelog.outputs.tag }}
+          body: ${{ needs.changelog.outputs.clean_changelog }}
           files: "build/*all.jar"

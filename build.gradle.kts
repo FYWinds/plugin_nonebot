@@ -1,3 +1,4 @@
+import groovy.json.JsonSlurper
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.Yaml
 import java.util.jar.JarFile
@@ -22,7 +23,9 @@ plugins {
 val group: String by project
 val mcApiVersion: String by project
 val ktorVersion: String by project
-val version: String by project
+
+@Suppress("UNCHECKED_CAST")
+val version = (JsonSlurper().parseText(File("package.json").readText()) as Map<String, String>)["version"] as String
 
 java {
     toolchain {
@@ -162,16 +165,11 @@ tasks {
             }
         }
     }
-}
 
-configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
-    version.set("0.48.2")
-    verbose.set(true)
-    outputToConsole.set(true)
-    enableExperimentalRules.set(true)
-    disabledRules.set(
-        setOf(
-            "no-wildcard-imports",
-        ),
-    )
+    ktlint {
+        version.set("0.48.2")
+        verbose.set(true)
+        outputToConsole.set(true)
+        enableExperimentalRules.set(true)
+    }
 }
