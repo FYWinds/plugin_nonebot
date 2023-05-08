@@ -1,8 +1,8 @@
 package fyi.fyw.mc.pluginnonebot.events
 
 import fyi.fyw.mc.pluginnonebot.PluginNonebot
-import fyi.fyw.mc.pluginnonebot.models.event.BaseEventFrame
-import fyi.fyw.mc.pluginnonebot.registry.WebsocketsRegistry
+import fyi.fyw.mc.pluginnonebot.events.models.BaseEventFrame
+import fyi.fyw.mc.pluginnonebot.websockets.WebsocketsRegistry
 import org.bukkit.event.Listener
 
 abstract class EventBroadcaster : Listener {

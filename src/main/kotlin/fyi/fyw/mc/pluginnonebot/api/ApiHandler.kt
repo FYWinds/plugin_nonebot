@@ -1,7 +1,7 @@
 package fyi.fyw.mc.pluginnonebot.api
 
 import fyi.fyw.mc.pluginnonebot.PluginNonebot
-import fyi.fyw.mc.pluginnonebot.models.api.BaseApiResult
+import fyi.fyw.mc.pluginnonebot.api.models.BaseApiResult
 
 interface ApiHandler {
     val id: String

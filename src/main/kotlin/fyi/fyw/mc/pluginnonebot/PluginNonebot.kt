@@ -1,16 +1,16 @@
 package fyi.fyw.mc.pluginnonebot
 
 import com.google.gson.Gson
+import fyi.fyw.mc.pluginnonebot.api.ApiHandlerRegistry
 import fyi.fyw.mc.pluginnonebot.config.Config
 import fyi.fyw.mc.pluginnonebot.config.connection.WsClientConfig
 import fyi.fyw.mc.pluginnonebot.config.connection.WsConfig
 import fyi.fyw.mc.pluginnonebot.config.connection.WsServerConfig
-import fyi.fyw.mc.pluginnonebot.registry.ApiHandlerRegistry
-import fyi.fyw.mc.pluginnonebot.registry.EventBroadcasterRegistry
-import fyi.fyw.mc.pluginnonebot.registry.WebsocketsRegistry
+import fyi.fyw.mc.pluginnonebot.events.EventBroadcasterRegistry
 import fyi.fyw.mc.pluginnonebot.websockets.NWebSocketClient
 import fyi.fyw.mc.pluginnonebot.websockets.NWebSocketServer
 import fyi.fyw.mc.pluginnonebot.websockets.Websockets
+import fyi.fyw.mc.pluginnonebot.websockets.WebsocketsRegistry
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.logging.Logger

@@ -1,9 +1,8 @@
 package fyi.fyw.mc.pluginnonebot.websockets
 
 import fyi.fyw.mc.pluginnonebot.PluginNonebot
+import fyi.fyw.mc.pluginnonebot.api.ApiHandlerRegistry
 import fyi.fyw.mc.pluginnonebot.config.connection.WsClientConfig
-import fyi.fyw.mc.pluginnonebot.registry.ApiHandlerRegistry
-import fyi.fyw.mc.pluginnonebot.registry.WebsocketsRegistry
 import fyi.fyw.mc.pluginnonebot.utils.NLogger
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
