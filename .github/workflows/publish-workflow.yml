@@ -1,18 +1,16 @@
 name: Publish
 on:
-  push:
-    branches:
-      - release
-      - release/**
   pull_request:
     branches:
       - release
       - release/**
+    types: [ closed ]
 
 jobs:
   build:
     uses: ./.github/workflows/build-workflow.yml
   release:
+    if: github.event.pull_request.merged == true
     needs: build
     name: Create Release
     runs-on: ubuntu-22.04
