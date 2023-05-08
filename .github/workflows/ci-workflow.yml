@@ -2,15 +2,13 @@ name: Dev Build
 on:
   push:
     branches:
-      - master
-      - main
-    tags-ignore:
-      - '**'
+      - dev
 
 
 jobs:
   build:
     name: Gradle Dev Build
+    if: "!contains(github.event.head_commit.message, 'release:')"
     runs-on: ubuntu-22.04
     outputs:
       version: ${{ steps.version.outputs.version }}

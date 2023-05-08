@@ -2,37 +2,39 @@ name: Publish
 on:
   push:
     branches:
-      - release
-      - release/**
-  pull_request:
-    branches:
-      - release
-      - release/**
+      - main
+      - master
 
 jobs:
-  build:
-    uses: ./.github/workflows/build-workflow.yml
-  release:
-    needs: build
-    name: Create Release
+  changelog:
+    name: Generate Changelog
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - name: Download build
-        uses: actions/download-artifact@v3
-        with:
-          name: build
-          path: build
-
       - name: Conventional Changelog Action
         id: changelog
         uses: TriPSs/conventional-changelog-action@v3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          create-summary: true
 
+  build:
+    needs: changelog
+    uses: ./.github/workflows/build-workflow.yml
+
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Download build
+        uses: actions/download-artifact@v3
+        with:
+          name: build
+          path: build
       - name: Create Release
         uses: softprops/action-gh-release@v1
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
