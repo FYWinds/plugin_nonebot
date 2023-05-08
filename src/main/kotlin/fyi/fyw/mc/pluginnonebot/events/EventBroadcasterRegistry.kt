@@ -30,5 +30,6 @@ object EventBroadcasterRegistry : Registry<EventBroadcaster> {
         register(BroadcasterPlayerCommand())
         register(BroadcasterServerCommand())
         register(BroadcasterPlayerDeath())
+        register(BroadcasterPlayerAdvancement())
     }
 }
