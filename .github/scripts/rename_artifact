@@ -1,5 +1,5 @@
 #!/bin/sh
-for f in build/libs/*.jar; do
+for f in build/libs/*all.jar; do
   tmp=$(echo "$f" | sed "s/$VERSION/$SHORT_SHA/")
   mv "$f" "$tmp"
 done
