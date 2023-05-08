@@ -26,6 +26,7 @@
 - get_available_api
 - get_player_list
 - get_player_info
+- get_player_inventory (Partially implemented)
 
 ### Events
 

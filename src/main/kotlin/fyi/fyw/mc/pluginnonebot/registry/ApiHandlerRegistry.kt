@@ -4,6 +4,7 @@ import fyi.fyw.mc.pluginnonebot.PluginNonebot
 import fyi.fyw.mc.pluginnonebot.api.ApiHandler
 import fyi.fyw.mc.pluginnonebot.api.internal.HandlerGetAvailableApi
 import fyi.fyw.mc.pluginnonebot.api.internal.HandlerGetPlayerInfo
+import fyi.fyw.mc.pluginnonebot.api.internal.HandlerGetPlayerInventory
 import fyi.fyw.mc.pluginnonebot.api.internal.HandlerGetPlayerList
 import fyi.fyw.mc.pluginnonebot.models.api.BaseApiResultFrame
 import org.java_websocket.WebSocket
@@ -49,7 +50,7 @@ object ApiHandlerRegistry : Registry<ApiHandler> {
                     BaseApiResultFrame(
                         "failed",
                         RetCode.InternalHandlerError.value,
-                        "${RetCode.InternalHandlerError.message}: ${e.message}",
+                        "${RetCode.InternalHandlerError.message}-${e.javaClass.simpleName}: ${e.message}",
                         null,
                         echo,
                     )
@@ -95,5 +96,6 @@ object ApiHandlerRegistry : Registry<ApiHandler> {
         this.register(HandlerGetAvailableApi())
         this.register(HandlerGetPlayerList())
         this.register(HandlerGetPlayerInfo())
+        this.register(HandlerGetPlayerInventory())
     }
 }
