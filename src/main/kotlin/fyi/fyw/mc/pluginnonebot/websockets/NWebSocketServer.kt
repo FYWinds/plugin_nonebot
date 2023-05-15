@@ -2,7 +2,6 @@ package fyi.fyw.mc.pluginnonebot.websockets
 
 import fyi.fyw.mc.pluginnonebot.PluginNonebot
 import fyi.fyw.mc.pluginnonebot.api.ApiHandlerRegistry
-import fyi.fyw.mc.pluginnonebot.config.Config
 import fyi.fyw.mc.pluginnonebot.config.connection.WsServerConfig
 import fyi.fyw.mc.pluginnonebot.utils.NLogger
 import org.java_websocket.WebSocket
@@ -17,7 +16,7 @@ class NWebSocketServer(conn: WsServerConfig) : Websockets, WsServer(InetSocketAd
     override val id: String = conn.id
     private val host: String = conn.host
     private val port: Int = conn.port
-    private val pingPeriod: Int = Config.INSTANCE.heartbeatInterval
+    private val pingPeriod: Int = conn.heartbeatInterval
     private val token: String = conn.token
     private val logger = NLogger(id)
     private val gson = PluginNonebot.gson
@@ -51,7 +50,9 @@ class NWebSocketServer(conn: WsServerConfig) : Websockets, WsServer(InetSocketAd
             }
         }
         logger.debug("Accepted connection from ${conn.remoteSocketAddress.hostString}")
-        return super.onWebsocketHandshakeReceivedAsServer(conn, draft, request)
+        val builder = super.onWebsocketHandshakeReceivedAsServer(conn, draft, request)
+        builder.put("X-Self", PluginNonebot.loadedConfig.serverName)
+        return builder
     }
 
     override fun onOpen(conn: WebSocket, handshake: ClientHandshake) {

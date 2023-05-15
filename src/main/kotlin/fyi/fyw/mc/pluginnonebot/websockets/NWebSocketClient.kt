@@ -18,6 +18,7 @@ class NWebSocketClient(conn: WsClientConfig) : WebSocketClient(URI(conn.address)
 
     override fun start() {
         if (token.isNotEmpty()) this.addHeader("Authorization", "Bearer $token")
+        this.addHeader("X-Self", PluginNonebot.loadedConfig.serverName)
         connect()
     }
 

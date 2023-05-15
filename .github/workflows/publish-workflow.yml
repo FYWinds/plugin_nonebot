@@ -49,3 +49,6 @@ jobs:
           name: ${{ needs.changelog.outputs.tag }}
           body: ${{ needs.changelog.outputs.clean_changelog }}
           files: "build/*all.jar"
+
+
+  # TODO: publish to modrinth

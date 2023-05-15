@@ -3,11 +3,6 @@
 # The server's identifier/name
 server-name: "SampleServer"
 
-# Heartbeat package
-heartbeat:
-  # Heartbeat interval in seconds, 0 to disable
-  interval: 5
-
 message:
   # Message format
   # Available variables: text, binary
@@ -45,28 +40,27 @@ api:
   rate-limit:
     enabled: false
     frequency: 1
-    bucket: 1
+    capacity: 3
 
 connections:
-  # Connections, can add multiple conntections using the same type
-  #- ws:   # Websocket, plugin will work as an WS server
-  #- ws-reverse: # Reversed Websocket, plugin will work as an WS client
-  - ws-reverse-1:
-      # Server address for ws client
-      # Setting this will override the following two settings
-      address: "ws://127.0.0.1:8080/mc/ws"
-      # Reconnect interval in milliseconds
-      reconnect-interval: 10000
-
-      # Access token
-      token: ''
-
-  - ws-1:
-      # Listening host
-      host: 0.0.0.0
-
-      # Listening port
-      port: 8081
-
-      # Access token
-      token: ''
+# Connections, can add multiple conntections using the same type
+#- ws:   # Websocket, plugin will work as an WS server
+#- ws-reverse: # Reversed Websocket, plugin will work as an WS client
+#  - ws-reverse-1:
+#      # Server address for ws client
+#      # Setting this will override the following two settings
+#      address: "ws://127.0.0.1:8080/mc/ws"
+#      # Reconnect interval in milliseconds
+#      reconnect-interval: 10000
+#      # Access token
+#      token: ''
+#
+#  - ws-1:
+#      # Listening host
+#      host: 0.0.0.0
+#      # Listening port
+#      port: 8081
+#      # Heartbeat interval in seconds
+#      heartbeat-interval: 30
+#      # Access token
+#      token: ''

@@ -4,12 +4,12 @@ import org.bukkit.configuration.file.YamlConfiguration
 
 class ApiConfig(config: YamlConfiguration) {
     var rateLimit: Boolean = false
-    var rateLimitFrequency: Int = 1
-    var rateLimitBucket: Int = 1
+    var rateLimitFrequency: Long = 1
+    var rateLimitCapacity: Long = 1
 
     init {
         rateLimit = config.getBoolean("api.rate-limit.enabled", false)
-        rateLimitFrequency = config.getInt("api.rate-limit.frequency", 1)
-        rateLimitBucket = config.getInt("api.rate-limit.bucket", 1)
+        rateLimitFrequency = config.getLong("api.rate-limit.frequency", 1)
+        rateLimitCapacity = config.getLong("api.rate-limit.bucket", 1)
     }
 }

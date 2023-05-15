@@ -3,11 +3,16 @@ package fyi.fyw.mc.pluginnonebot.api
 import fyi.fyw.mc.pluginnonebot.PluginNonebot
 import fyi.fyw.mc.pluginnonebot.api.models.BaseApiResultFrame
 import fyi.fyw.mc.pluginnonebot.utils.Registry
+import fyi.fyw.mc.pluginnonebot.utils.TokenBucket
 import org.java_websocket.WebSocket
 
 object ApiHandlerRegistry : Registry<ApiHandler> {
     override val values: MutableMap<String, ApiHandler> = mutableMapOf()
     val gson = PluginNonebot.gson
+    val tokenBucket = TokenBucket(
+        PluginNonebot.loadedConfig.api.rateLimitCapacity,
+        PluginNonebot.loadedConfig.api.rateLimitFrequency,
+    )
 
     override fun register(value: ApiHandler) {
         values[value.id] = value
@@ -36,7 +41,7 @@ object ApiHandlerRegistry : Registry<ApiHandler> {
             )
             return
         }
-        val echo = (message["echo"] as Double).toInt()
+        val echo = (message["echo"] as Double).toInt() // Data in the incoming message is Double by default
         val action = message["action"] as String
 
         if (action !in values.keys) {
@@ -55,11 +60,30 @@ object ApiHandlerRegistry : Registry<ApiHandler> {
         }
         val handler = values[action]!! // Already checked
 
+        if (PluginNonebot.loadedConfig.api.rateLimit) {
+            if (!tokenBucket.tryConsume()) {
+                conn.send(
+                    gson.toJson(
+                        BaseApiResultFrame(
+                            "failed",
+                            RetCode.RateLimited.value,
+                            RetCode.RateLimited.message,
+                            null,
+                            echo,
+                        ),
+                    ),
+                )
+                return
+            }
+        }
+
         @Suppress("UNCHECKED_CAST")
         val params = message["params"] as Map<String, Any>
         try {
-            val result = handler.handle(params)
-            conn.send(gson.toJson(BaseApiResultFrame(data = result, echo = echo)))
+            Thread {
+                val result = handler.handle(params)
+                conn.send(gson.toJson(BaseApiResultFrame(data = result, echo = echo)))
+            }.start()
         } catch (e: TypeCastException) {
             conn.send(
                 gson.toJson(
@@ -93,6 +117,7 @@ object ApiHandlerRegistry : Registry<ApiHandler> {
         BadParam(10003, "Bad Param"),
         UnsupportedParam(10004, "Unsupported Param"),
         InternalHandlerError(20002, "Internal Handler Error"),
+        RateLimited(30001, "Rate Limit Exceed"),
     }
 
     fun init() {
